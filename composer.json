@@ -1,0 +1,22 @@
+{
+    "name": "Daily",
+    "description": "Daily habits, notes and summary plugin",
+    "version": "0.1",
+    "screenshot": "/images/screenshot.png",
+    "authors": [
+        {
+            "name": "Cees Bos",
+            "email": "support@leantime.io"
+        }
+    ],
+    "homepage": "https://github.com/cbos/leantime-daily-plugin",
+    "type": "plugin",
+    "keywords": [
+        "",
+        ""
+    ],
+    "license": "Apache-2.0",
+    "require": {
+        "leantime/leantime": "3.0"
+    }
+}
