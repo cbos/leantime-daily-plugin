@@ -8,8 +8,6 @@ class Habit
 
     public ?string $name = '';
 
-    public ?string $description = '';
-
     public mixed $userId = null;
 
     public ?int $habitType = null;
@@ -25,7 +23,6 @@ class Habit
         if ($values !== false) {
             $this->id = $values['id'] ?? '';
             $this->name = $values['name'] ?? '';
-            $this->description = $values['description'] ?? '';
             $this->userId = $values['userId'] ?? '';
             $this->habitType = $values['habitType'] ?? 0;
             $this->minValue = $values['minValue'] ?? null;
