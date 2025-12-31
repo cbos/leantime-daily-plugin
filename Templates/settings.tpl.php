@@ -1,6 +1,6 @@
 
 <div class="pageheader">
-    <div class="pageicon"><span class="fa fa-book"></span></div>
+    <div class="pageicon"><span class="fa fa-calendar-day"></span></div>
     <div class="pagetitle">
         <h1>Example plugin settings page</h1>
     </div>

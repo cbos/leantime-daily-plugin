@@ -10,11 +10,20 @@ EventDispatcher::add_filter_listener('leantime.domain.menu.repositories.menu.get
     $menuStructure['personal'][30] = [
         'type' => 'item',
         'module' => 'daily',
-        'title' => 'Daily summary',
-        'icon' => 'fa fa-fw fa-calendar-check',
-        'tooltip' => 'Daily Summary',
+        'title' => 'menu.sidemenu_daily_summary',
+        'icon' => 'fa fa-calendar-check',
+        'tooltip' => 'menu.sidemenu_daily_summary_tooltip',
         'href' => '/daily/settings',
         'active' => ['settings']
+    ];
+    $menuStructure['personal'][31] = [
+        'type' => 'item',
+        'module' => 'daily',
+        'title' => 'menu.sidemenu_daily_habits',
+        'icon' => 'fa fa-solid fa-bullseye',
+        'tooltip' => 'menu.sidemenu_daily_habits_tooltip',
+        'href' => '/daily/habits',
+        'active' => ['habits']
     ];
 
     return $menuStructure;
@@ -25,7 +34,8 @@ EventDispatcher::add_filter_listener('leantime.domain.menu.repositories.menu.get
     function ($routes) {
 
         $sections = [
-            'daily.settings' => 'personal'
+            'daily.settings' => 'personal',
+            'daily.habits' => 'personal'
         ];
 
         return array_merge($routes, $sections);
@@ -48,7 +58,7 @@ EventDispatcher::add_filter_listener('leantime.*.availableWidgets',
             'gridY' => 43,
             'alwaysVisible' => false,
             'noTitle' => false,
-            'widgetUrl' => BASE_URL . '/daily/settings',
+            'widgetUrl' => BASE_URL . '/daily/myDaily/get',
             'fixed' => false,
         ]);
         return array_merge($availableWidgets, $myWidgets);

@@ -25,7 +25,6 @@ class GetLanguageAssets
      **/
     public function handle(IncomingRequest $request, Closure $next): Response
     {
-        Log::error("handle request to get the language");
         $languageArray = Cache::get('daily.languageArray', []);
 
         if (! empty($languageArray)) {
