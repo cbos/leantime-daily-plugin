@@ -116,10 +116,6 @@ class DailyDBUpdateRepository
             }
         }
 
-        // Store the new version number in the settings table based on the configuration
-        $settingsService = app()->make(Setting::class);
-        $settingsService->saveSetting(self::$db_version_identifier, $this->appSettings->dbVersion);
-
         session()->forget('isUpdated');
         session()->forget('dbVersion');
 
@@ -128,12 +124,12 @@ class DailyDBUpdateRepository
 
     private function convert_version($inputVersion): string
     {
-        // $inputVersion is in the format of 10000 and needs to be converted to 1.00.00
+        // $inputVersion is in the format of 10000 and needs to be converted to 1.0.0
         $versionString = str_pad((string) $inputVersion, 5, '0', STR_PAD_LEFT);
 
-        $major = substr($versionString, 0, -4);
-        $minor = substr($versionString, -4, 2);
-        $patch = substr($versionString, -2);
+        $major = intval(substr($versionString, 0, -4));
+        $minor = intval(substr($versionString, -4, 2));
+        $patch = intval(substr($versionString, -2)  );
 
         return $major . '.' . $minor . '.' . $patch;
     }
