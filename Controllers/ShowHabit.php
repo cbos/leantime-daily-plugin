@@ -9,6 +9,7 @@ use Leantime\Core\Support\FromFormat;
 use Leantime\Domain\Auth\Models\Roles;
 use Leantime\Domain\Auth\Services\Auth;
 use Leantime\Domain\Users\Services\Users as UserService;
+use Leantime\Plugins\Daily\Models\Habit;
 use Leantime\Plugins\Daily\Services\Habits as HabitsService;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -42,5 +43,28 @@ class ShowHabit extends Controller
         $this->tpl->assign('selectedHabitType', $this->habitsService->getHabitTypeById($habit->habitType));
 
         return $this->tpl->displayPartial('daily.showHabitModal');
+    }
+
+    public function post($params): Response
+    {
+        if (isset($params['saveTicket']) || isset($params['saveAndCloseTicket'])) {
+
+            $habit = app()->make(Habit::class,  [
+                'values' => $params,
+            ]);
+
+            $this->habitsService->editHabit($habit);
+
+            if (isset($params['saveAndCloseTicket']) === true && $params['saveAndCloseTicket'] == 1) {
+                return Frontcontroller::redirect(BASE_URL.'/daily/showHabit/'.$habit->id.'?closeModal=1');
+            } else {
+                $habit = $this->habitsService->getHabitById($habit->id);
+                $this->tpl->assign('habit', $habit);
+                $this->tpl->assign('selectedHabitType', $this->habitsService->getHabitTypeById($habit->habitType));
+
+                return $this->tpl->displayPartial('daily.showHabitModal');
+            }
+        }
+        return Frontcontroller::redirect(BASE_URL.'/daily/habits');
     }
 }

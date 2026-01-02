@@ -5,10 +5,13 @@ namespace Leantime\Plugins\Daily\Services;
 use Leantime\Plugins\Daily\Models\HabitType;
 use Leantime\Plugins\Daily\Models\Habit;
 
+use Leantime\Plugins\Daily\Repositories\HabitRepository;
+
 class Habits
 {
-    public function __construct()
-    {}
+    public function __construct(private HabitRepository $habitRepository)
+    {
+    }
 
     public function getHabitTypes()
     {
@@ -50,38 +53,13 @@ class Habits
         return null;
     }
 
-    public function getMyHabits()
+    public function getMyHabits(): array
     {
-        $yesNo = app()->make(Habit::class, [
-            'values' => [
-                'id' => 1,
-                'name' => 'CheckIn',
-                'habitType' => '0'
-            ],
-        ]);
-
-        $mood = app()->make(Habit::class, [
-            'values' => [
-                'id' => 2,
-                'name' => 'Mood',
-                'habitType' => '1',
-                'minValue' => 1,
-                'maxValue' => 10
-            ],
-        ]);
-
-        $location = app()->make(Habit::class, [
-            'values' => [
-                'id' => 3,
-                'name' => 'Location',
-                'habitType' => '2',
-                'enumValues' => 'ING,OpenValue,Thuis,Conferentie'
-            ],
-        ]);
-        return [$yesNo, $mood, $location];
+        return $this->habitRepository->getHabitsByCurrentUser();
     }
 
-    public function getHabitById($id){
+    public function getHabitById($id)
+    {
         $habits = $this->getMyHabits();
         foreach ($habits as $habit) {
             if ($habit->id == $id) {
@@ -89,5 +67,20 @@ class Habits
             }
         }
         return null;
+    }
+
+    public function addHabit(Habit $habit): string|bool
+    {
+        return $this->habitRepository->addHabit($habit);
+    }
+
+    public function editHabit(Habit $habit): void
+    {
+        $this->habitRepository->editHabit($habit);
+    }
+
+    public function deleteHabit(int $id): int|false
+    {
+        return $this->habitRepository->deleteHabit($id);
     }
 }

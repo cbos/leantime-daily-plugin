@@ -22,12 +22,10 @@ $habit = $tpl->get('habit');
 <br />
 
 <script type="text/javascript">
-
     jQuery(document).ready(function(){
 
         <?php if (isset($_GET['closeModal'])) { ?>
         jQuery.nmTop().close();
         <?php } ?>
     });
-
 </script>

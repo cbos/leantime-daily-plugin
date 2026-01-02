@@ -41,4 +41,35 @@ class NewHabit extends Controller
 
         return $this->tpl->displayPartial('daily.newHabitModal');
     }
+
+    public function post($params): Response
+    {
+        if (isset($params['saveTicket']) || isset($params['saveAndCloseTicket'])) {
+
+            $habit = app()->make(Habit::class,  [
+                'values' => $params,
+            ]);
+
+            $result = $this->habitsService->addHabit($habit);
+
+            if (is_array($result) === false) {
+                $this->tpl->setNotification($this->language->__('notifications.ticket_saved'), 'success');
+
+                if (isset($params['saveAndCloseTicket']) === true && $params['saveAndCloseTicket'] == 1) {
+                    return Frontcontroller::redirect(BASE_URL.'/daily/showHabit/'.$result.'?closeModal=1');
+                } else {
+                    return Frontcontroller::redirect(BASE_URL.'/daily/showHabit/'.$result);
+                }
+            } else {
+                $this->tpl->setNotification($this->language->__($result['msg']), 'error');
+
+                $this->tpl->assign('habit', $habit);
+                $this->tpl->assign('habitTypes', $this->habitsService->getHabitTypes());
+                $this->tpl->assign('selectedHabitType', $this->habitsService->getHabitTypeById($habit->habitType));
+
+                return $this->tpl->displayPartial('daily.newHabitModal');
+            }
+        }
+        return Frontcontroller::redirect(BASE_URL.'/daily/habits');
+    }
 }

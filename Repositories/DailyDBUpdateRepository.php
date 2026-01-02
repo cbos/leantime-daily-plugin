@@ -150,8 +150,8 @@ class DailyDBUpdateRepository
                     `userId` int(11) DEFAULT NULL,
                     `name` varchar(200) DEFAULT NULL,
                     `habitType` TINYINT DEFAULT NULL,
-                    `minValue` SMALLINT DEFAULT NULL,
-                    `maxValue` SMALLINT DEFAULT NULL,
+                    `numMinValue` SMALLINT DEFAULT NULL,
+                    `numMaxValue` SMALLINT DEFAULT NULL,
                     `enumValues` varchar(400) DEFAULT NULL,
                     PRIMARY KEY (`id`),
                     KEY `idx_habit_userId` (`userId`)

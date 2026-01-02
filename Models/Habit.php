@@ -12,9 +12,9 @@ class Habit
 
     public ?int $habitType = null;
 
-    public ?int $minValue = null;
+    public ?int $numMinValue = null;
 
-    public ?int $maxValue = null;
+    public ?int $numMaxValue = null;
 
     public ?string $enumValues = null;
 
@@ -25,8 +25,8 @@ class Habit
             $this->name = $values['name'] ?? '';
             $this->userId = $values['userId'] ?? '';
             $this->habitType = $values['habitType'] ?? 0;
-            $this->minValue = $values['minValue'] ?? null;
-            $this->maxValue = $values['maxValue'] ?? null;
+            $this->numMinValue = $values['numMinValue'] ?? null;
+            $this->numMaxValue = $values['numMaxValue'] ?? null;
             $this->enumValues = $values['enumValues'] ?? null;
         }
     }
