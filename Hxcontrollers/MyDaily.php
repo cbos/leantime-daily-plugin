@@ -21,7 +21,9 @@ class MyDaily extends HtmxController
 
     public function get()
     {
+        $selectedDate = date('Y-m-d');
         $this->tpl->assign('habits', $this->habitsService->getMyHabits());
-        $this->tpl->assign('selectedDate', date('Y-m-d'));
+        $this->tpl->assign('habitRecords', $this->habitsService->getMyHabitRecordsFor($selectedDate));
+        $this->tpl->assign('selectedDate', $selectedDate);
     }
 }

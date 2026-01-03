@@ -2,6 +2,7 @@
 
 namespace Leantime\Plugins\Daily\Services;
 
+use Leantime\Plugins\Daily\Models\HabitRecord;
 use Leantime\Plugins\Daily\Models\HabitType;
 use Leantime\Plugins\Daily\Models\Habit;
 
@@ -82,5 +83,20 @@ class Habits
     public function deleteHabit(int $id): int|false
     {
         return $this->habitRepository->deleteHabit($id);
+    }
+
+    public function addHabitRecord(HabitRecord $habitRecord): string|bool
+    {
+        return $this->habitRepository->addHabitRecord($habitRecord);
+    }
+
+    public function editHabitRecord(HabitRecord $habitRecord): void
+    {
+        $this->habitRepository->editHabitRecord($habitRecord);
+    }
+
+    public function getMyHabitRecordsFor(string $date): array
+    {
+        return $this->habitRepository->getHabitRecordsByCurrentUserByDate($date);
     }
 }

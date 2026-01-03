@@ -17,7 +17,10 @@
                 <div class="row marginBottom">
                     <div class="col-md-12">
                         @foreach ($habits as $habit)
-                        @include('daily::partials.habit', ['habit' => $habit, 'tpl' => $tpl, 'habitRecord' => null,
+                        @php
+                            $habitRecord = collect($habitRecords)->where('habitId', $habit->id)->first();
+                        @endphp
+                        @include('daily::partials.habit', ['habit' => $habit, 'tpl' => $tpl, 'habitRecord' => $habitRecord,
                         'selectedDate' => $selectedDate])
                         @endforeach
                     </div>

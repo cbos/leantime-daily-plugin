@@ -33,6 +33,8 @@
                             type="number"
                             class="form-control"
                             name="habitValue"
+                            min="{{ $habit?->numMinValue }}"
+                            max="{{ $habit?->numMaxValue }}"
                             hx-post="/daily/recordHabit"
                             hx-target="#form-habit-{{ $habit->id }}"
                             value="{{ $habitRecord?->value ?? '' }}">

@@ -34,6 +34,13 @@ class RecordHabit extends HtmxController
         $habitRecord->date = $params['selectedDate'];
         $habitRecord->value = $params['habitValue'];
 
+        if ($habitRecord->id) {
+            $this->habitsService->editHabitRecord($habitRecord);
+        } else {
+            $id = $this->habitsService->addHabitRecord($habitRecord);
+            $habitRecord->id = $id;
+        }
+
         $this->tpl->assign('habit', $habit);
         $this->tpl->assign('habitRecord', $habitRecord);
         $this->tpl->assign('selectedDate', $params['selectedDate']);

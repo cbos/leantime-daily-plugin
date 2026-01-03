@@ -23,6 +23,7 @@ class DailyDBUpdateRepository
      */
     private array $dbUpdates = [
         10000,
+        10001,
     ];
 
     /**
@@ -135,15 +136,37 @@ class DailyDBUpdateRepository
     }
 
     /**
-     * update_sql_10000 - create habits table
+     * @param array $sql
+     * @return array|true
+     */
+    public function executeSchemaUpdate(array $sql): array|bool
+    {
+        $errors = [];
+        foreach ($sql as $statement) {
+            try {
+                $stmn = $this->db->database->prepare($statement);
+                $stmn->execute();
+            } catch (PDOException $e) {
+                Log::error($statement . ' Failed:' . $e->getMessage());
+                Log::error($e);
+                array_push($errors, $statement . ' Failed:' . $e->getMessage());
+            }
+        }
+
+        if (count($errors) > 0) {
+            return $errors;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * update_sql_10000 - create habit table
      *
      * @noinspection SqlResolve - A lot of tables don't exist anymore, so this will not resolve. Keeping the update script for backwards compatibility
      */
     private function update_sql_10000(): bool|array
     {
-
-        $errors = [];
-
         $sql = [
             'CREATE TABLE `zp_habit` (
                     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -158,22 +181,30 @@ class DailyDBUpdateRepository
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;',
         ];
 
-        foreach ($sql as $statement) {
-            try {
-                $stmn = $this->db->database->prepare($statement);
-                $stmn->execute();
-            } catch (PDOException $e) {
-                Log::error($statement.' Failed:'.$e->getMessage());
-                Log::error($e);
-                array_push($errors, $statement.' Failed:'.$e->getMessage());
-            }
-        }
+        return $this->executeSchemaUpdate($sql);
+    }
 
-        if (count($errors) > 0) {
-            return $errors;
-        } else {
-            return true;
-        }
+    /**
+     * update_sql_10001 - create habit_record table
+     *
+     * @noinspection SqlResolve - A lot of tables don't exist anymore, so this will not resolve. Keeping the update script for backwards compatibility
+     */
+    private function update_sql_10001(): bool|array
+    {
+        $sql = [
+            'CREATE TABLE `zp_habitrecord` (
+                    `id` int(11) NOT NULL AUTO_INCREMENT,
+                    `userId` int(11) DEFAULT NULL,
+                    `habitId` int(11) NOT NULL,
+                    `date` date DEFAULT NULL,
+                    `value` varchar(400) DEFAULT NULL,
+                    PRIMARY KEY (`id`),
+                    KEY `idx_habit_userId` (`userId`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;',
+            'CREATE INDEX idx_habitrecord_userid_dateModified ON zp_habitrecord (userId, date)'
+        ];
+        return $this->executeSchemaUpdate($sql);
     }
 }
+
 

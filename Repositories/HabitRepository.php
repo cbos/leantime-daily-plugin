@@ -5,6 +5,7 @@ namespace Leantime\Plugins\Daily\Repositories;
 use Leantime\Core\Db\Db as DbCore;
 use Leantime\Core\Db\Repository as RepositoryCore;
 use Leantime\Plugins\Daily\Models\Habit;
+use Leantime\Plugins\Daily\Models\HabitRecord;
 
 use PDO;
 
@@ -91,6 +92,61 @@ class HabitRepository extends RepositoryCore
 
         $stmn->execute();
         $values = $stmn->fetchAll(PDO::FETCH_CLASS, '\Leantime\Plugins\Daily\Models\Habit');
+        $stmn->closeCursor();
+
+        return $values;
+    }
+
+    public function addHabitRecord(HabitRecord $habitRecord): false|string
+    {
+        $query = 'INSERT INTO zp_habitrecord (userId, habitId, date, value)  
+                    VALUES (:userId, :habitId, :date, :value)';
+
+        $stmn = $this->db->database->prepare($query);
+        $stmn->bindValue(':userId', session('userdata.id'), PDO::PARAM_INT);
+        $stmn->bindValue(':habitId', $habitRecord->habitId, PDO::PARAM_INT);
+        $stmn->bindValue(':date', $habitRecord->date, PDO::PARAM_STR);
+        $stmn->bindValue(':value', $habitRecord->value, PDO::PARAM_STR);
+
+        if ($stmn->execute()) {
+            $id = $this->db->database->lastInsertId();
+            $stmn->closeCursor();
+
+            return $id;
+        } else {
+            $stmn->closeCursor();
+
+            return false;
+        }
+    }
+
+    public function editHabitRecord(HabitRecord $habitRecord): void
+    {
+        $query = 'UPDATE zp_habitrecord SET 
+                    value = :value 
+                WHERE id = :id AND userId = :userId AND date = :date LIMIT 1';
+
+        $stmn = $this->db->database->prepare($query);
+
+        $stmn->bindValue(':id', $habitRecord->id, PDO::PARAM_INT);
+        $stmn->bindValue(':userId', session('userdata.id'), PDO::PARAM_INT);
+        $stmn->bindValue(':date', $habitRecord->date, PDO::PARAM_STR);
+        $stmn->bindValue(':value', $habitRecord->value, PDO::PARAM_STR);
+
+        $stmn->execute();
+        $stmn->closeCursor();
+    }
+
+    public function getHabitRecordsByCurrentUserByDate(string $date): array
+    {
+        $query = 'SELECT * FROM zp_habitrecord WHERE userId = :userId AND date = :date';
+
+        $stmn = $this->db->database->prepare($query);
+        $stmn->bindValue(':userId', session('userdata.id'), PDO::PARAM_INT);
+        $stmn->bindValue(':date', $date, PDO::PARAM_STR);
+
+        $stmn->execute();
+        $values = $stmn->fetchAll(PDO::FETCH_CLASS, '\Leantime\Plugins\Daily\Models\HabitRecord');
         $stmn->closeCursor();
 
         return $values;
