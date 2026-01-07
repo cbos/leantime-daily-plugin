@@ -32,7 +32,7 @@ class ShowHabit extends Controller
     public function get($params): Response
     {
         if (! isset($params['id'])) {
-            return $this->tpl->displayPartial('errors.error400', responseCode: 400);
+            return $this->tpl->displayPartial('daily.error400', responseCode: 400);
         }
 
         $id = (int) ($params['id']);

@@ -99,4 +99,9 @@ class Habits
     {
         return $this->habitRepository->getHabitRecordsByCurrentUserByDate($date);
     }
+
+    public function getMyHabitRecordsForYear(string $year): array
+    {
+        return $this->habitRepository->getHabitRecordsByCurrentUserByYear($year);
+    }
 }

@@ -2,35 +2,39 @@
 
 namespace Leantime\Plugins\Daily\Controllers;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Leantime\Core\Controller\Controller;
+use Leantime\Core\Controller\Frontcontroller;
+use Leantime\Core\Support\FromFormat;
 use Leantime\Domain\Auth\Models\Roles;
 use Leantime\Domain\Auth\Services\Auth;
 use Leantime\Domain\Users\Services\Users as UserService;
 use Leantime\Plugins\Daily\Services\Habits as HabitsService;
 use Symfony\Component\HttpFoundation\Response;
 
-class Habits extends Controller
+class ShowDaily extends Controller
 {
-    private UserService $userService;
-
     private HabitsService $habitsService;
 
     public function init(
-        UserService $userService,
         HabitsService $habitsService
     ): void {
         Auth::authOrRedirect([Roles::$owner, Roles::$admin, Roles::$manager, Roles::$editor]);
 
-        $this->userService = $userService;
         $this->habitsService = $habitsService;
     }
 
-    public function get(): Response
+    public function get($params): Response
     {
-        $year = date('Y');
+        if (! isset($params['selectedDate'])) {
+            return $this->tpl->displayPartial('daily.error400', responseCode: 400);
+        }
+
+        $selectedDate = $params['selectedDate'];
         $this->tpl->assign('habits', $this->habitsService->getMyHabits());
-        $this->tpl->assign('habitRecords', $this->habitsService->getMyHabitRecordsForYear($year));
-        $this->tpl->assign('year', $year);
-        return $this->tpl->display("daily.habits");
+        $this->tpl->assign('habitRecords', $this->habitsService->getMyHabitRecordsFor($selectedDate));
+        $this->tpl->assign('selectedDate', $selectedDate);
+
+        return $this->tpl->displayPartial('daily.showDailyModal');
     }
 }

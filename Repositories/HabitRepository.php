@@ -151,5 +151,21 @@ class HabitRepository extends RepositoryCore
 
         return $values;
     }
+
+    public function getHabitRecordsByCurrentUserByYear(string $year): array
+    {
+        $query = 'SELECT * FROM zp_habitrecord WHERE userId = :userId AND date >= :yearStart AND date <= :yearEnd';
+
+        $stmn = $this->db->database->prepare($query);
+        $stmn->bindValue(':userId', session('userdata.id'), PDO::PARAM_INT);
+        $stmn->bindValue(':yearStart', $year."-01-01", PDO::PARAM_STR);
+        $stmn->bindValue(':yearEnd', $year."-12-31", PDO::PARAM_STR);
+
+        $stmn->execute();
+        $values = $stmn->fetchAll(PDO::FETCH_CLASS, '\Leantime\Plugins\Daily\Models\HabitRecord');
+        $stmn->closeCursor();
+
+        return $values;
+    }
 }
 
