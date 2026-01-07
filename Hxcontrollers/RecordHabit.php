@@ -22,7 +22,6 @@ class RecordHabit extends HtmxController
 
     public function post($params)
     {
-        Log::error(var_export($params, true));
         $habit = $this->habitsService->getHabitById($params['habitId']);
 
         $habitRecord = app()->make(HabitRecord::class,  [
